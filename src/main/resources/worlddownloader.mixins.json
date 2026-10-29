@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "dev.apollointhehouse.worlddownloader.mixin",
+  "compatibilityLevel": "JAVA_${java}",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "ChunkMixin",
+    "ChunkSectionMixin",
+    "PlayerMixin"
+  ],
+  "client": []
+}
