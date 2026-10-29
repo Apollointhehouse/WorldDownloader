@@ -1,4 +1,4 @@
-package dev.apollointhehouse.worlddownloader.events;
+package dev.apollointhehouse.worlddownloader.event;
 
 import net.minecraft.core.world.chunk.ChunkSection;
 

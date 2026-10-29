@@ -1,8 +1,8 @@
-package dev.apollointhehouse.worlddownloader;
+package dev.apollointhehouse.worlddownloader.io;
 
-import dev.apollointhehouse.worlddownloader.events.BlockChangeEvent;
-import dev.apollointhehouse.worlddownloader.events.ChunkSectionDataEvent;
-import dev.apollointhehouse.worlddownloader.events.ToggleDownloadEvent;
+import dev.apollointhehouse.worlddownloader.event.BlockChangeEvent;
+import dev.apollointhehouse.worlddownloader.event.ChunkSectionDataEvent;
+import dev.apollointhehouse.worlddownloader.event.ToggleDownloadEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.option.GameSettings;
 import net.minecraft.core.entity.player.Player;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static dev.apollointhehouse.worlddownloader.Events.*;
+import static dev.apollointhehouse.worlddownloader.event.Events.*;
 import static dev.apollointhehouse.worlddownloader.WorldDownloader.LOGGER;
 import static dev.apollointhehouse.worlddownloader.WorldDownloader.MOD_ID;
 

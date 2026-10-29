@@ -1,4 +1,4 @@
-package dev.apollointhehouse.worlddownloader;
+package dev.apollointhehouse.worlddownloader.io;
 
 import com.mojang.nbt.NbtIo;
 import com.mojang.nbt.tags.CompoundTag;

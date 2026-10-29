@@ -1,7 +1,7 @@
 package dev.apollointhehouse.worlddownloader.mixin;
 
-import dev.apollointhehouse.worlddownloader.Events;
-import dev.apollointhehouse.worlddownloader.events.KeyPressEvent;
+import dev.apollointhehouse.worlddownloader.event.Events;
+import dev.apollointhehouse.worlddownloader.event.KeyPressEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.InputDevice;
 import org.spongepowered.asm.mixin.Mixin;

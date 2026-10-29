@@ -1,7 +1,7 @@
 package dev.apollointhehouse.worlddownloader.mixin;
 
-import dev.apollointhehouse.worlddownloader.Events;
-import dev.apollointhehouse.worlddownloader.events.BlockChangeEvent;
+import dev.apollointhehouse.worlddownloader.event.Events;
+import dev.apollointhehouse.worlddownloader.event.BlockChangeEvent;
 import net.minecraft.core.world.chunk.Chunk;
 import net.minecraft.core.world.pos.ChunkTilePosc;
 import org.spongepowered.asm.mixin.Mixin;

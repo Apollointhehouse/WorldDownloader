@@ -1,9 +1,5 @@
-package dev.apollointhehouse.worlddownloader;
+package dev.apollointhehouse.worlddownloader.event;
 
-import dev.apollointhehouse.worlddownloader.events.BlockChangeEvent;
-import dev.apollointhehouse.worlddownloader.events.ChunkSectionDataEvent;
-import dev.apollointhehouse.worlddownloader.events.KeyPressEvent;
-import dev.apollointhehouse.worlddownloader.events.ToggleDownloadEvent;
 import turniplabs.halplibe.event.impl.SortedBaseEvent;
 
 import java.util.function.Consumer;

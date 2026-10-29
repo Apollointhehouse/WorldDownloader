@@ -1,7 +1,7 @@
 package dev.apollointhehouse.worlddownloader.mixin;
 
-import dev.apollointhehouse.worlddownloader.Events;
-import dev.apollointhehouse.worlddownloader.events.ChunkSectionDataEvent;
+import dev.apollointhehouse.worlddownloader.event.Events;
+import dev.apollointhehouse.worlddownloader.event.ChunkSectionDataEvent;
 import net.minecraft.core.world.chunk.ChunkSection;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -1,7 +1,9 @@
 package dev.apollointhehouse.worlddownloader;
 
-import dev.apollointhehouse.worlddownloader.events.KeyPressEvent;
+import dev.apollointhehouse.worlddownloader.event.Events;
+import dev.apollointhehouse.worlddownloader.event.KeyPressEvent;
 import dev.apollointhehouse.worlddownloader.gui.DownloadProgressDisplay;
+import dev.apollointhehouse.worlddownloader.io.Downloader;
 import dev.apollointhehouse.worlddownloader.options.WorldDownloaderSettings;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.Minecraft;

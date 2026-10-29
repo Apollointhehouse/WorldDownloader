@@ -1,4 +1,4 @@
-package dev.apollointhehouse.worlddownloader;
+package dev.apollointhehouse.worlddownloader.io;
 
 import net.minecraft.core.world.Dimension;
 import net.minecraft.core.world.chunk.Chunk;

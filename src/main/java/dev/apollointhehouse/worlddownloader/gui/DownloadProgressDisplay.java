@@ -1,8 +1,8 @@
 package dev.apollointhehouse.worlddownloader.gui;
 
-import dev.apollointhehouse.worlddownloader.Downloader;
-import dev.apollointhehouse.worlddownloader.Events;
-import dev.apollointhehouse.worlddownloader.events.ToggleDownloadEvent;
+import dev.apollointhehouse.worlddownloader.io.Downloader;
+import dev.apollointhehouse.worlddownloader.event.Events;
+import dev.apollointhehouse.worlddownloader.event.ToggleDownloadEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.hud.HudIngame;

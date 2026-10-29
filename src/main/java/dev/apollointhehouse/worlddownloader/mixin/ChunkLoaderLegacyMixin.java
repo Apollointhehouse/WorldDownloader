@@ -1,7 +1,7 @@
 package dev.apollointhehouse.worlddownloader.mixin;
 
-import dev.apollointhehouse.worlddownloader.Events;
-import dev.apollointhehouse.worlddownloader.events.ChunkSectionDataEvent;
+import dev.apollointhehouse.worlddownloader.event.Events;
+import dev.apollointhehouse.worlddownloader.event.ChunkSectionDataEvent;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.world.chunk.ChunkLoaderLegacy;
 import net.minecraft.core.world.chunk.ChunkSection;
