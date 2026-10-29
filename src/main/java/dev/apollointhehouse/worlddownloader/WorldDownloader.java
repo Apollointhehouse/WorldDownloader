@@ -34,9 +34,8 @@ public class WorldDownloader implements ModInitializer {
 	}
 
 	public void afterGameStart() {
-
 		final var layout = new LayoutAbsolute(0.5f, 0f, ComponentAnchor.TOP_CENTER);
-		final var progessComponenet = HudComponents.register(
+		HudComponents.register(
 			new DownloadProgressDisplay(
 				"progress_display",
 				100, 20,

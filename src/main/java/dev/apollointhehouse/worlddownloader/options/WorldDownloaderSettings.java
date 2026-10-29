@@ -8,5 +8,6 @@ import org.lwjgl.input.Keyboard;
 public class WorldDownloaderSettings {
 	private WorldDownloaderSettings() {}
 
-	public static final KeyBinding keybind = GameSettings.register((new KeyBinding("key.worlddownloader")).setDefault(InputDevice.keyboard, Keyboard.KEY_K));
+	public static final KeyBinding keybind = GameSettings.register((new KeyBinding("key.worlddownloader"))
+		.setDefault(InputDevice.keyboard, Keyboard.KEY_K));
 }

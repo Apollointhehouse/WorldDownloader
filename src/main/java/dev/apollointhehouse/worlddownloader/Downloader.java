@@ -42,7 +42,7 @@ public class Downloader {
 	public void toggle() {
 		enabled = !enabled;
 
-		ToggleDownloadEvent event = new ToggleDownloadEvent(enabled);
+		ToggleDownloadEvent event = new ToggleDownloadEvent(this);
 		TOGGLE_DOWNLOAD_EVENT.emit(c -> c.accept(event));
 
 		if (enabled) onEnable(); else onDisable();
@@ -50,6 +50,16 @@ public class Downloader {
 
 	public boolean isEnabled() {
 		return enabled;
+	}
+
+	public int downloadSize() {
+		int chunks = 0;
+
+		for (var data : dimensions.values()) {
+			chunks += data.getChunks().size();
+		}
+
+		return chunks;
 	}
 
 	private void onEnable() {
