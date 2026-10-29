@@ -39,7 +39,7 @@ public class WorldSaver {
 		final var source = world.getLevelData();
 		final var sizeBefore = source.getSizeOnDisk();
 
-		final var activeFormat = SaveFormats.createSaveFormat(19133, worldDir);
+		final var activeFormat = SaveFormats.createSaveFormat(19135, worldDir);
 		final var storage = new LevelStorageServer(activeFormat, saveDir, name, true);
 
 		storage.saveLevelDataAndPlayerData(world.getLevelData(), world.players);
@@ -50,7 +50,7 @@ public class WorldSaver {
 
 			final var dimID = dim.id;
 
-			final var dimDir = (dimID == 0) ? worldDir : new File(worldDir, "dimensions/" + dimID);
+			final var dimDir = new File(worldDir, "dimensions/" + dimID);
 			dimDir.mkdirs();
 
 			storage.saveDimensionData(dimID, dim.getDimensionData(world));
@@ -78,7 +78,7 @@ public class WorldSaver {
 		levelData.getSpawnPos().set(x, y, z);
 		levelData.setWorldTime(source.getWorldTime());
 		levelData.setTotalWorldTime(source.getTotalWorldTime());
-		levelData.setSaveVersion(source.getSaveVersion());
+		levelData.setSaveVersion(19135);
 		levelData.setCheatsEnabled(true);
 		levelData.setDifficulty(source.getDifficulty(), true);
 
