@@ -2,6 +2,7 @@ package dev.apollointhehouse.worlddownloader;
 
 import dev.apollointhehouse.worlddownloader.events.BlockChangeEvent;
 import dev.apollointhehouse.worlddownloader.events.ChunkSectionDataEvent;
+import dev.apollointhehouse.worlddownloader.events.ToggleDownloadEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.option.GameSettings;
 import net.minecraft.core.entity.player.Player;
@@ -18,10 +19,10 @@ import static dev.apollointhehouse.worlddownloader.WorldDownloader.LOGGER;
 import static dev.apollointhehouse.worlddownloader.WorldDownloader.MOD_ID;
 
 public class Downloader {
-	private final World world;
+	private World world;
 	private final Player player;
 	private final Minecraft mc = Minecraft.getMinecraft();
-	private final WorldSaver saver;
+	private WorldSaver saver;
 	private boolean enabled;
 
 	public Downloader(Player player, World world) {
@@ -41,7 +42,14 @@ public class Downloader {
 	public void toggle() {
 		enabled = !enabled;
 
+		ToggleDownloadEvent event = new ToggleDownloadEvent(enabled);
+		TOGGLE_DOWNLOAD_EVENT.emit(c -> c.accept(event));
+
 		if (enabled) onEnable(); else onDisable();
+	}
+
+	public boolean isEnabled() {
+		return enabled;
 	}
 
 	private void onEnable() {
@@ -49,6 +57,10 @@ public class Downloader {
 
 		BLOCK_CHANGE_EVENT.listen(Key.of(MOD_ID), this::onBlockChange);
 		CHUNK_SECTION_DATA_EVENT.listen(Key.of(MOD_ID), this::onChunkSectionData);
+
+		world = mc.currentWorld;
+
+		saver = new WorldSaver(mc, world);
 
 		dimensions.clear();
 		if (mc.currentWorld != null) scanLoadedChunks();
@@ -69,18 +81,6 @@ public class Downloader {
 
 		LOGGER.info("Saved chunks to local world!");
 	}
-
-//	private void onRender(Render2DEvent event) {
-//		final var chunksSaved = dimensions.values.map { it.chunks.size }.sum();
-//		final var text = "Chunks Saved: $chunksSaved";
-//
-//		event.renderer.textWithShadow(
-//			text,
-//			(mc.resolution.getExactScaledHeightScreenCoords() - event.renderer.font.stringWidth(text)) / 2.0,
-//			10.0,
-//			TextFormatting.Base.Color.GREEN
-//			);
-//	}
 
 	private void onBlockChange(BlockChangeEvent event) {
 		dim().addChunk(event.chunk().pos, event.chunk());

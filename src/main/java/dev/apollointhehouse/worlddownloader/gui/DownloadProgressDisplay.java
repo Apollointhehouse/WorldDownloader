@@ -1,22 +1,34 @@
 package dev.apollointhehouse.worlddownloader.gui;
 
+import dev.apollointhehouse.worlddownloader.Events;
+import dev.apollointhehouse.worlddownloader.events.ToggleDownloadEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.hud.HudIngame;
 import net.minecraft.client.gui.hud.component.HudComponentMovable;
 import net.minecraft.client.gui.hud.component.layout.Layout;
 import net.minecraft.client.render.renderer.GLRenderer;
+import turniplabs.halplibe.util.dependency.Key;
+
+import static dev.apollointhehouse.worlddownloader.WorldDownloader.MOD_ID;
 
 public class DownloadProgressDisplay extends HudComponentMovable  {
 	private final Minecraft mc = Minecraft.getMinecraft();
+	private boolean enabled;
 
 	public DownloadProgressDisplay(String key, int xSize, int ySize, Layout layout) {
 		super(key, xSize, ySize, layout);
+
+		Events.TOGGLE_DOWNLOAD_EVENT.listen(Key.of(MOD_ID), this::toggle);
+	}
+
+	private void toggle(ToggleDownloadEvent event) {
+		this.enabled = event.enabled();
 	}
 
 	@Override
 	public boolean isVisible() {
-		return true;
+		return enabled;
 	}
 
 	@Override

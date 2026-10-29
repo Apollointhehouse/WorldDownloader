@@ -7,8 +7,9 @@
   },
   "mixins": [
     "ChunkMixin",
-    "ChunkSectionMixin",
-    "PlayerMixin"
+    "ChunkSectionMixin"
   ],
-  "client": []
+  "client": [
+    "MinecraftMixin"
+  ]
 }

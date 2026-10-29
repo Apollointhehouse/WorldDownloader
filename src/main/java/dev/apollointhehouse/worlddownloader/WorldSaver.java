@@ -32,17 +32,17 @@ public class WorldSaver {
 		int spawnX, int spawnY, int spawnZ
 	) {
 		final var name = "Downloaded_" + System.currentTimeMillis();
-		final var saveDir = new File(mc.getMinecraftDir(), "saves/$name");
-		if (!saveDir.mkdirs()) return;
+		final var saveDir = new File(mc.getMinecraftDir(), "saves");
+		final var worldDir = new File(saveDir, name);
+		if (!worldDir.mkdirs()) return;
 
 		final var source = world.getLevelData();
 		final var sizeBefore = source.getSizeOnDisk();
 
-		final var activeFormat = SaveFormats.createSaveFormat(19135, saveDir);
+		final var activeFormat = SaveFormats.createSaveFormat(19133, worldDir);
 		final var storage = new LevelStorageServer(activeFormat, saveDir, name, true);
 
 		storage.saveLevelDataAndPlayerData(world.getLevelData(), world.players);
-		storage.saveDimensionData(world.dimension.id, world.getDimensionData());
 
 		for (var data : dims) {
 			final var dim = data.getDimension();
@@ -50,8 +50,8 @@ public class WorldSaver {
 
 			final var dimID = dim.id;
 
-			final var dimDir = (dimID == 0) ? saveDir : new File(saveDir, "dimensions/" + dimID);
-			if (!dimDir.mkdirs()) continue;
+			final var dimDir = (dimID == 0) ? worldDir : new File(worldDir, "dimensions/" + dimID);
+			dimDir.mkdirs();
 
 			storage.saveDimensionData(dimID, dim.getDimensionData(world));
 
@@ -65,10 +65,11 @@ public class WorldSaver {
 			}
 		}
 
+
 		source.setSizeOnDisk(sizeBefore);
 		RegionFileCache.flushCache();
 
-		writeLevelDat(saveDir, name, source, spawnX, spawnY, spawnZ);
+		writeLevelDat(worldDir, name, source, spawnX, spawnY, spawnZ);
 	}
 
 	private void writeLevelDat(File dir, String name, LevelData source, int x, int y, int z) {
@@ -80,8 +81,6 @@ public class WorldSaver {
 		levelData.setSaveVersion(source.getSaveVersion());
 		levelData.setCheatsEnabled(true);
 		levelData.setDifficulty(source.getDifficulty(), true);
-		//        store.saveLevelDataAndPlayerData(out, listOf());
-		//        store.saveDimensionData(dim.id, dimData);
 
 		final var data = LevelData.serialize(levelData, new CompoundTag());
 		final var root = new CompoundTag();
@@ -90,6 +89,7 @@ public class WorldSaver {
 		try (OutputStream out = new FileOutputStream(new File(dir, "level.dat"))) {
 			NbtIo.writeCompressed(root, out);
 		} catch (IOException e) {
+			LOGGER.warn("Failed to save level.dat", e);
 			throw new RuntimeException(e);
 		}
 	}

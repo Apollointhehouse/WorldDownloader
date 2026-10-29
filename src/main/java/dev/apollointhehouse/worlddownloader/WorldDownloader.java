@@ -1,5 +1,6 @@
 package dev.apollointhehouse.worlddownloader;
 
+import dev.apollointhehouse.worlddownloader.events.KeyPressEvent;
 import dev.apollointhehouse.worlddownloader.gui.DownloadProgressDisplay;
 import dev.apollointhehouse.worlddownloader.options.WorldDownloaderSettings;
 import net.fabricmc.api.ModInitializer;
@@ -50,19 +51,20 @@ public class WorldDownloader implements ModInitializer {
 				)
 			);
 
-		Events.TICK_EVENT.listen(Key.of(MOD_ID), this::onTick);
+		Events.KEY_PRESS_EVENT.listen(Key.of(MOD_ID), this::onKeyPress);
 	}
 
-	private void onTick() {
+	private void onKeyPress(KeyPressEvent event) {
 		Minecraft mc = Minecraft.getMinecraft();
 
 		if (downloader == null) {
 			downloader = new Downloader(mc.thePlayer, mc.currentWorld);
 		}
 
-		if (WorldDownloaderSettings.keybind.isReleaseEvent()) {
-			LOGGER.info("toggle!");
+		if (WorldDownloaderSettings.keybind.isPressEvent(event.currentInputDevice())) {
 			downloader.toggle();
+
+			if (!downloader.isEnabled()) downloader = null;
 		}
 	}
 }
