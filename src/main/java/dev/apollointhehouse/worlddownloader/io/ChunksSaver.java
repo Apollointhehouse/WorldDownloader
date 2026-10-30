@@ -2,8 +2,6 @@ package dev.apollointhehouse.worlddownloader.io;
 
 import com.mojang.nbt.NbtIo;
 import com.mojang.nbt.tags.CompoundTag;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.world.World;
 import net.minecraft.core.world.chunk.ChunkLoaderRegion;
 import net.minecraft.core.world.save.LevelData;
 import net.minecraft.core.world.save.LevelStorageServer;
@@ -13,58 +11,57 @@ import net.minecraft.core.world.save.mcregion.RegionFileCache;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
+import java.util.Collection;
 
 import static dev.apollointhehouse.worlddownloader.WorldDownloader.LOGGER;
 
-public class WorldSaver {
-	private final Minecraft mc;
-	private final World world;
+public class ChunksSaver {
+	private final LevelDataSource level;
+	private final File saveDir;
 
-	public WorldSaver(Minecraft mc, World world) {
-		this.mc = mc;
-		this.world = world;
+	public ChunksSaver(File saveDir, LevelDataSource level) {
+		this.saveDir = saveDir;
+		this.level = level;
 	}
 
 	public void save(
-		List<DimData> dims,
+		Collection<DimData> dims,
 		int spawnX, int spawnY, int spawnZ
 	) {
 		final var name = "Downloaded_" + System.currentTimeMillis();
-		final var saveDir = new File(mc.getMinecraftDir(), "saves");
 		final var worldDir = new File(saveDir, name);
 		if (!worldDir.mkdirs()) return;
 
-		final var source = world.getLevelData();
+		final var source = level.getLevelData();
 		final var sizeBefore = source.getSizeOnDisk();
 
 		final var activeFormat = SaveFormats.createSaveFormat(19135, worldDir);
 		final var storage = new LevelStorageServer(activeFormat, saveDir, name, true);
 
-		storage.saveLevelDataAndPlayerData(world.getLevelData(), world.players);
+		storage.saveLevelDataAndPlayerData(level.getLevelData(), level.getPlayers());
 
-		for (var data : dims) {
+		for (final var data : dims) {
 			final var dim = data.getDimension();
 			final var chunks = data.getChunks();
 
 			final var dimID = dim.id;
 
 			final var dimDir = new File(worldDir, "dimensions/" + dimID);
-			dimDir.mkdirs();
+			if (!dimDir.mkdirs()) {
+				LOGGER.warn("Failed to create dimensions directory");
+			}
 
-			storage.saveDimensionData(dimID, dim.getDimensionData(world));
+			storage.saveDimensionData(dimID, level.getDimensionData(dim));
 
 			final var loader = new ChunkLoaderRegion(dimDir);
 			for (var chunk : chunks) {
 				try {
-					loader.saveChunk(world, chunk);
+					level.saveChunk(loader, chunk);
 				} catch (IOException e) {
 					LOGGER.warn("Failed to save chunk {}", chunk, e);
 				}
 			}
 		}
-
 
 		source.setSizeOnDisk(sizeBefore);
 		RegionFileCache.flushCache();
@@ -86,7 +83,7 @@ public class WorldSaver {
 		final var root = new CompoundTag();
 		root.put("Data", data);
 
-		try (OutputStream out = new FileOutputStream(new File(dir, "level.dat"))) {
+		try (final var out = new FileOutputStream(new File(dir, "level.dat"))) {
 			NbtIo.writeCompressed(root, out);
 		} catch (IOException e) {
 			LOGGER.warn("Failed to save level.dat", e);

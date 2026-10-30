@@ -1,8 +1,7 @@
 package dev.apollointhehouse.worlddownloader.gui;
 
-import dev.apollointhehouse.worlddownloader.io.Downloader;
-import dev.apollointhehouse.worlddownloader.event.Events;
-import dev.apollointhehouse.worlddownloader.event.ToggleDownloadEvent;
+import dev.apollointhehouse.worlddownloader.event.StartDownloadCallback;
+import dev.apollointhehouse.worlddownloader.io.ChunksDownloader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.hud.HudIngame;
@@ -15,24 +14,17 @@ import static dev.apollointhehouse.worlddownloader.WorldDownloader.MOD_ID;
 
 public class DownloadProgressDisplay extends HudComponentMovable  {
 	private final Minecraft mc = Minecraft.getMinecraft();
-	private boolean enabled;
-	private Downloader downloader;
+	private ChunksDownloader downloader;
 
 	public DownloadProgressDisplay(String key, int xSize, int ySize, Layout layout) {
 		super(key, xSize, ySize, layout);
 
-		Events.TOGGLE_DOWNLOAD_EVENT.listen(Key.of(MOD_ID), this::toggle);
-	}
-
-	private void toggle(ToggleDownloadEvent event) {
-		this.enabled = event.downloader().isEnabled();
-
-		if (enabled) downloader = event.downloader(); else downloader = null;
+		StartDownloadCallback.EVENT.listen(Key.of(MOD_ID), (event) -> downloader = event.downloader());
 	}
 
 	@Override
 	public boolean isVisible() {
-		return enabled;
+		return downloader != null && downloader.isRunning();
 	}
 
 	@Override
@@ -42,7 +34,7 @@ public class DownloadProgressDisplay extends HudComponentMovable  {
 
 		GLRenderer.setColor1i(0xFF00FF00);
 
-		final var text = "Chunks Downloaded: " + downloader.downloadSize();
+		final var text = "Chunks Downloaded: " + downloader.size();
 
 		hud.drawStringShadow(
 			mc.font,

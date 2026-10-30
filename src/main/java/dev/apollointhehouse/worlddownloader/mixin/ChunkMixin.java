@@ -1,7 +1,7 @@
 package dev.apollointhehouse.worlddownloader.mixin;
 
-import dev.apollointhehouse.worlddownloader.event.Events;
-import dev.apollointhehouse.worlddownloader.event.BlockChangeEvent;
+import dev.apollointhehouse.worlddownloader.event.BlockChangeCallback;
+import dev.apollointhehouse.worlddownloader.event.BlockChangeCallback.BlockChangeEvent;
 import net.minecraft.core.world.chunk.Chunk;
 import net.minecraft.core.world.pos.ChunkTilePosc;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,6 +16,6 @@ public class ChunkMixin {
 		Chunk chunk = (Chunk) (Object) this;
 		BlockChangeEvent event = new BlockChangeEvent(chunk);
 
-		Events.BLOCK_CHANGE_EVENT.emit(consumer -> consumer.accept(event));
+		BlockChangeCallback.EVENT.emit(handler -> handler.handle(event));
 	}
 }

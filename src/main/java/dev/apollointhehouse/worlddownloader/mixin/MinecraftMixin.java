@@ -1,7 +1,7 @@
 package dev.apollointhehouse.worlddownloader.mixin;
 
-import dev.apollointhehouse.worlddownloader.event.Events;
-import dev.apollointhehouse.worlddownloader.event.KeyPressEvent;
+import dev.apollointhehouse.worlddownloader.event.KeyPressCallback;
+import dev.apollointhehouse.worlddownloader.event.KeyPressCallback.KeyPressEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.InputDevice;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,6 +14,6 @@ public class MinecraftMixin {
 	@Inject(method = "checkBoundInputs", at = @At("HEAD"))
 	public void checkBoundInputs(InputDevice currentInputDevice, CallbackInfoReturnable<Boolean> cir) {
 		KeyPressEvent event = new KeyPressEvent(currentInputDevice);
-		Events.KEY_PRESS_EVENT.emit(consumer -> consumer.accept(event));
+		KeyPressCallback.EVENT.emit(handler -> handler.handle(event));
 	}
 }

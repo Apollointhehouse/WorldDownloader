@@ -1,9 +1,8 @@
 package dev.apollointhehouse.worlddownloader;
 
-import dev.apollointhehouse.worlddownloader.event.Events;
-import dev.apollointhehouse.worlddownloader.event.KeyPressEvent;
+import dev.apollointhehouse.worlddownloader.event.KeyPressCallback;
 import dev.apollointhehouse.worlddownloader.gui.DownloadProgressDisplay;
-import dev.apollointhehouse.worlddownloader.io.Downloader;
+import dev.apollointhehouse.worlddownloader.io.*;
 import dev.apollointhehouse.worlddownloader.options.WorldDownloaderSettings;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.Minecraft;
@@ -19,20 +18,17 @@ import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.event.defs.CommonEvents;
 import turniplabs.halplibe.util.dependency.Key;
 
-public class WorldDownloader implements ModInitializer {
+import java.io.File;
+
+public class WorldDownloader implements ModInitializer, KeyPressCallback {
 	public static final String MOD_ID = HalpLibe.registerMod("worlddownloader", true);
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	private static Downloader downloader;
+	private static ChunksDownloader downloader;
 
 	@Override
 	public void onInitialize() {
-		CommonEvents.BEFORE_GAME_START.listen(Key.of(MOD_ID), this::beforeGameStart);
 		CommonEvents.AFTER_GAME_START.listen(Key.of(MOD_ID), this::afterGameStart);
 		LOGGER.info("WorldDownloader initialized.");
-	}
-
-	public void beforeGameStart() {
-
 	}
 
 	public void afterGameStart() {
@@ -47,25 +43,36 @@ public class WorldDownloader implements ModInitializer {
 
 		OptionsPages.CONTROLS
 			.withComponent(
-				new OptionsCategory("worlddownloader")
+				new OptionsCategory("worlddownloader.toggle")
 					.withComponent(new KeyBindingComponent(WorldDownloaderSettings.keybind)
 				)
 			);
 
-		Events.KEY_PRESS_EVENT.listen(Key.of(MOD_ID), this::onKeyPress);
+		KeyPressCallback.EVENT.listen(Key.of(MOD_ID), this);
 	}
 
-	private void onKeyPress(KeyPressEvent event) {
-		Minecraft mc = Minecraft.getMinecraft();
+	@Override
+	public void handle(KeyPressEvent event) {
+		final var mc = Minecraft.getMinecraft();
+
+		if (mc.currentWorld == null) return;
+		if (!WorldDownloaderSettings.keybind.isPressEvent(event.currentInputDevice())) return;
 
 		if (downloader == null) {
-			downloader = new Downloader(mc.thePlayer, mc.currentWorld);
+			final var level = LevelDataSource.of(mc.currentWorld);
+			final var position = PositionSource.of(mc.thePlayer);
+
+			final var saveDir = new File(mc.getMinecraftDir(), "saves");
+			final var saver = new ChunksSaver(saveDir, level);
+
+			downloader = new ChunksDownloader(position, level, saver);
+			downloader.start();
+			return;
 		}
 
-		if (WorldDownloaderSettings.keybind.isPressEvent(event.currentInputDevice())) {
-			downloader.toggle();
-
-			if (!downloader.isEnabled()) downloader = null;
+		if (downloader.isRunning()) {
+			downloader.stop();
+			downloader = null;
 		}
 	}
 }
